@@ -7,9 +7,16 @@ import time, random
 
 class NoServersAvailable(Exception): pass
 
-
-
 class ThriftClient(object):
+    """Thirft Client
+
+    Connects to a Thrift client and runs the available attributes on the list
+    of hosts passed to the class.
+
+    >>> client = ThriftClient(Cassandra.Client, ['localhost:9160'], retries=2)
+    >>> print client.get_string_list_property('keyspaces')
+    ['Keyspace1', 'system']
+    """
     
     def __init__(self, client_class, hosts, **options):
         self.client_class = client_class
@@ -31,6 +38,7 @@ class ThriftClient(object):
         client.transport = transport
         return client
 
+    # XXX: Needs work
     def next_server(self):
         if not self.clients:
             raise NoServersAvailable
@@ -75,10 +83,8 @@ class ThriftClient(object):
 
 if __name__ == '__main__':
     import sys
-    sys.path.append('/Users/asenchi/src/cassandra-trunk/interface/gen-py')
+    sys.path.append('gen-py')
     from cassandra import Cassandra
     from cassandra.ttypes import *
     client = ThriftClient(Cassandra.Client, ['localhost:9160', 'aaa:9160'], retries=2)
-    
     print client.get_string_list_property('keyspaces')
-    print client.get('Keyspace1', 'jsmith', ColumnPath('Standard1', column='age'), ConsistencyLevel.ONE)
