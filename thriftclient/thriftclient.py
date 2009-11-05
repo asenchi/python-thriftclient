@@ -38,7 +38,7 @@ class ThriftClient(object):
         client.transport = transport
         return client
 
-    # XXX: Needs work
+    # XXX: Needs rewritten to grab the next available server.
     def next_server(self):
         if not self.clients:
             raise NoServersAvailable
@@ -80,11 +80,3 @@ class ThriftClient(object):
                         attempts -= 1
                         pass
         return callable
-
-if __name__ == '__main__':
-    import sys
-    sys.path.append('gen-py')
-    from cassandra import Cassandra
-    from cassandra.ttypes import *
-    client = ThriftClient(Cassandra.Client, ['localhost:9160', 'aaa:9160'], retries=2)
-    print client.get_string_list_property('keyspaces')
